@@ -1,22 +1,35 @@
 from fastapi import APIRouter
 from app.models import HealthData
 from app.db import health_collection
+from blockchain.blockchain_service import generate_hash
 
 router = APIRouter()
 
-@router.get("/test")
-def test_api():
-    return {"status": "API working fine"}
+@router.post("/predict")
+def predict(data: HealthData):
+    risk_score = 0.82
+    risk_level = "High"
 
-@router.get("/test-db")
-def test_db():
-    health_collection.insert_one({"msg": "mongo working"})
-    return {"status": "MongoDB connected"}
-
-@router.post("/upload-health-data")
-def upload_health_data(data: HealthData):
-    health_collection.insert_one(data.dict())
-    return {
-        "message": "Health data saved successfully",
-        "data": data
+    report = {
+        "user_id": "U001",
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "model_version": "v1.0"
     }
+
+    report_hash = generate_hash(report)
+
+    return {
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "report_hash": report_hash
+    }
+
+@router.post("/verify")
+def verify(report: dict, stored_hash: str):
+    new_hash = generate_hash(report)
+
+    if new_hash == stored_hash:
+        return {"status": "Verified"}
+    else:
+        return {"status": "Tampered"}

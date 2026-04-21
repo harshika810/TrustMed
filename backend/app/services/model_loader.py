@@ -1,28 +1,77 @@
-import joblib
-import os
-import pandas as pd
+from fastapi import APIRouter
+from app.models import HealthData
+from app.db import health_collection
 
-MODEL_PATH = os.path.join("backend", "ml", "ml", "data", "risk_model.pkl")
+# ✅ ML import
+from app.services.model_loader import predict_risk
 
-model = joblib.load(MODEL_PATH)
+# ✅ Blockchain hash
+from blockchain.blockchain_service import generate_hash
+
+router = APIRouter()
 
 
-def predict_risk(sleep_hours, heart_rate, activity, systolic_bp, diastolic_bp, spo2):
-    input_data = pd.DataFrame([{
-        "sleep_hours": sleep_hours,
-        "heart_rate": heart_rate,
-        "activity": activity,
-        "systolic_bp": systolic_bp,
-        "diastolic_bp": diastolic_bp
-    }])
+@router.get("/test")
+def test_api():
+    return {"status": "API working fine"}
 
-    ml_prediction = model.predict(input_data)[0]
 
-    if spo2 < 92:
-        return "High Risk (Low Oxygen)"
-    elif systolic_bp > 140 or diastolic_bp > 90:
-        return "High Risk (High BP)"
-    elif ml_prediction == 1:
-        return "Moderate Risk"
+@router.get("/test-db")
+def test_db():
+    health_collection.insert_one({"msg": "mongo working"})
+    return {"status": "MongoDB connected"}
+
+
+@router.post("/upload-health-data")
+def upload_health_data(data: HealthData):
+    health_collection.insert_one(data.dict())
+    return {
+        "message": "Health data saved successfully",
+        "data": data
+    }
+
+
+# 🔥 FINAL PREDICT ROUTE (ML + Blockchain)
+@router.post("/predict")
+def predict(data: HealthData):
+
+    # ✅ ML prediction
+    risk_score, risk_level = predict_risk(
+        data.sleep_hours,
+        data.heart_rate,
+        data.activity,
+        data.systolic_bp,
+        data.diastolic_bp,
+        data.spo2
+    )
+
+    # ✅ Report
+    report = {
+        "user_id": "U001",
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "model_version": "v1.0"
+    }
+
+    # ✅ Hash generate
+    report_hash = generate_hash(report)
+
+    return {
+        "risk_score": risk_score,
+        "risk_level": risk_level,
+        "report_hash": report_hash
+    }
+
+
+# 🔥 VERIFY ROUTE
+@router.post("/verify")
+def verify(data: dict):
+    report = data["report"]
+    stored_hash = data["stored_hash"]
+
+    new_hash = generate_hash(report)
+
+    if new_hash == stored_hash:
+        return {"status": "Verified"}
     else:
-        return "Low Risk"
+        return {"status": "Tampered"}
