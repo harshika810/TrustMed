@@ -1,0 +1,52 @@
+body {
+  margin: 0;
+  padding:0;
+}
+
+header{
+  height: 20px;
+  display: flex;
+  flex-direction: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: rgb(10, 4, 131);
+  padding: 15px 30px;
+  margin:0;
+}
+header nav{
+  display: flex;
+  padding: 0;
+  margin :0;
+  height: 100%;
+  align-items: center;
+
+}
+header nav ul{
+  list-style: none;
+  display: flex;
+  
+}
+header nav ul li {
+  margin-left: 40px;
+  
+}
+header nav ul li a{
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: 0.3s;
+
+}
+header nav ul li a:hover{
+  color: #00adb5;
+}
+
+.user_input_grp{
+  position: relative;
+  border-top-left-radius: 20%;
+  padding: 10px;
+  width: 250px;
+  height: 20px;
+  border: 5 #00adb5 5;
+}
+
