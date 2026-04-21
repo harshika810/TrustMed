@@ -12,6 +12,3 @@ def root():
     
     return {"message": "TrustMedX backend is running"}
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app)
