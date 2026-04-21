@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+import xgboost as xgb
 import joblib
 import os
 
@@ -53,6 +54,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 # 11. Train model
 model = RandomForestClassifier(random_state=42)
 model.fit(X_train, y_train)
+
+
 
 # 12. Save model
 os.makedirs("backend/ml/ml/data", exist_ok=True)
