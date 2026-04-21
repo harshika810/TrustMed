@@ -1,34 +1,74 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/src/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>vite-project</title>
-  </head>
-  <body>
-    <header>
-      <nav>
-        <ul>
-          <li><a>Home</a></li>
-          <li><a>About</a></li>
-          <li><a>Contect US</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <div class="user_input_grp">
 
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/src/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <title>vite-project</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a>Home</a></li>
+        <li><a>About</a></li>
+        <li><a>Contect US</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <div class="data_input">
+      <div>
+        <div class="user_input_grp">
+          <label for="heart_rate">Heart Rate: </label>
+          <input type="text" name="heart_rate" id="" class="user_input" placeholder="Enter Heart Rate">
+        </div>
+
+        <div class="user_input_grp">
+
+          <label for="spo2">Spo2: </label>
+          <input type="text" name="spo2" id="" class="user_input" placeholder="Enter SpO2">
+        </div>
       </div>
-      <label for="heart_rate">Heart Rate: </label>
-      <input type="text" name="heart_rate" id="" class="user_input">
-
-    </main>
-
-    <footer>
 
 
-    </footer>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+      <button class="submit_btn">Submit</button>
+    </div>
+<canvas id="myChart"></canvas>
+  </main>
+
+  <footer>
+
+
+  </footer>
+  <script>
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'Sales',
+          data: [12, 19, 8, 15, 10],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
